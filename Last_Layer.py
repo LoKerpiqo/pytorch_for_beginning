@@ -25,24 +25,6 @@ import data_processing
 
 
 
-# vgg19 10m Loss:0.6980 Acc:0.5098
-
-# Resnet18
-# 263s val Loss: 0.9248 Acc: 0.4641
-
-# Resnet50
-# 10 min val Loss: 0.6980 Acc: 0.5098
-# 787s val Loss: 0.6103 Acc: 0.7778
-
-# Resnet101
-# val Loss: 0.7226 Acc: 0.4510
-
-
-# inception_v3
-# val Loss: 0.7944 Acc: 0.4314
-
-# To do , fix the train_model function with different model input
-
 model_conv = torchvision.models.resnet101(pretrained=True)
 for param in model_conv.parameters():
     param.requries_grad = False

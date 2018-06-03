@@ -13,72 +13,7 @@ import copy
 import torch
 
 
-#
-# root ='/Users/wuxinheng/Documents/web_data_training'
-# r = '/Users/wuxinheng/Documents/web_data_training/crawl_data'
-# imgs = os.listdir('/Users/wuxinheng/Documents/web_data_training/crawl_data')
-# tr = '/Users/wuxinheng/Documents/web_data_training/images'
-# val_img_l = os.listdir('/Users/wuxinheng/Documents/web_data_training/images')
-#
-# for i in val_img_l:
-#     os.rename(os.path.join(tr,i),os.path.join(tr,i.split('.')[-1]))
-#
-# for j in imgs:
-#     os.rename(os.path.join(r,j),os.path.join(root,'train',j))
-#
-# for j in imgs:
-#     os.rename(os.path.join(tr,j),os.path.join(root,'test',j))
-#
-# os.listdir(os.path.join('/Users/wuxinheng/Documents/web_data_training','train','Bobolink'))
-#
-# imgs = os.listdir('/Users/wuxinheng/Documents/web_data_training/train')
-#
-#
-#
-# def delete_txt(img):
-#     l = os.listdir(os.path.join('/Users/wuxinheng/Documents/web_data_training','train',img))
-#     for content in l:
-#         if content.split('.')[-1]=='txt':
-#             os.remove(os.path.join('/Users/wuxinheng/Documents/web_data_training','train',img,content))
-#     return
-#
-
-# for i in imgs:
-#     try:
-#         delete_txt(i)
-#     except Exception as e:
-#         print(e)
-
-
-
-# try:
-#     for j in imgs:
-#         content = os.listdir(os.path.join('/Users/wuxinheng/Documents/web_data_training','train',j))
-#         for c in content:
-#             if c.split('.')[-1] == 'txt':
-#                 os.remove(os.path.join('/Users/wuxinheng/Documents/web_data_training','train',j,c))
-# except Exception as e:
-#     print(e)
-
-# command+c
-#class MyDataset(torch.utils.data.Dataset):
-#     def __init__(self, path_file, list_file, numJoints, type):
-#         # TO DO
-#         # Initialize file path, create a list of trainning name and test name
-#         # initialize parameter
-#         pass
-#     def __getitem__(self, index):
-#         # TO DO
-#         # Read one data from file
-#         # Transform data
-#         # return a data dict (image and label)
-#
-#     def __len__(self):
-#         # return the size of dataset
-#         return len
-# class torchvision.transforms.Compose
-# A list of transform
-
+# class torchvision.transforms.Compose is A list of transform
 
 # CenterCrop(size): 将给定的PIL.Image进行中心切割，输出size，这里size可以是tuple(H,W)
 # RandomCrop（size, padding = 0)
@@ -90,12 +25,10 @@ import torch
 # 224*224 的图片Scale(56)得到 （56，56）
 # Scale 是size=int时的Resize退化版本。
 
-
 # RandomResizedCrop（size, scale=(0.08,1),ratio=(H,W),interpolation=2)
 # A crop of random size of the original size
 # and a random aspect ratio of the original aspect ratio is made.
 # This crop is finally resized to given size.
-
 
 
 # Pad (padding, fill=0) 将给定图片的所有边用pad value填充。padding是填充像素范围，fill是值
@@ -104,8 +37,8 @@ import torch
 #           转换为 [C,H,W]的[0,1]的torch.FloadTensor
 # ToPILImage
 
-# Resnet 224
-# Intcpn 299
+# Resnet input  224
+# Intcpn input  299
 
 data_transforms={
 'train': transforms.Compose([
@@ -122,7 +55,17 @@ transforms.Normalize([0.485,0.456,0.406],[0.229,0.224,0.225])
 ]),
 }
 
+# Make sure that your file is like:
+# file_folder:
+#   train_folder:
+#     train_class_i_folder
+#     ...
+#   test:
+#     test_class_i_folder
+#     ...
+
 data_dir = '/Users/wuxinheng/Documents/hymenoptera_data'
+# Your file path
 
 
 image_datasets = {x: datasets.ImageFolder(os.path.join(data_dir,x),data_transforms[x])
@@ -136,7 +79,7 @@ dataset_size = {x: len(image_datasets[x]) for x in ['train','val']}
 
 class_names = image_datasets['train'].classes
 
-#device = torch.device("cuda:0" if torch.cuda.is_available else "cpu")
+device = torch.device("cuda:0" if torch.cuda.is_available else "cpu")
 
 def imshow(inp, title=None):
     
@@ -153,15 +96,18 @@ def imshow(inp, title=None):
     plt.pause(0.001)
 
 
-# inputs, classes = next(iter(data_loaders['train']))
-#
-# out = torchvision.utils.make_grid(inputs)
-#
-# try:
-#     imshow(out, title=[class_names[x] for x in classes])
-# except Exception as e:
-#     print(e)
+inputs, classes = next(iter(data_loaders['train']))
 
+out = torchvision.utils.make_grid(inputs)
+
+try:
+    imshow(out, title=[class_names[x] for x in classes])
+except Exception as e:
+    print(e)
+    
+    
+
+#######################################################################
 # Training the model
 # - Scheduling the learning rate
 # - Saving the best model
@@ -242,6 +188,9 @@ def train_model(model, criterion, optimizer, scheduler, num_epochs=25):
     model.load_state_dict(best_model_wts)
     return model
 
+####################################################
+# - visualize your model
+
 def visualize_model(model, num_images = 6):
     was_training = model.training
     model.eval()
@@ -267,6 +216,8 @@ def visualize_model(model, num_images = 6):
                     model.train(mode = was_training)
                     return
         model.train(mode = was_training)
+        
+        
 
 
 

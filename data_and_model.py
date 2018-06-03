@@ -13,8 +13,37 @@ import copy
 import torch
 
 
-# class torchvision.transforms.Compose is A list of transform
 
+# Make sure that your file is like:
+# file_folder:
+#   train_folder:
+#     train_class_i_folder
+#     ...
+#   test:
+#     test_class_i_folder
+#     ...
+
+
+######################################################################
+# Load Data
+# ---------
+# We will use torchvision and torch.utils.data packages for loading the
+# data.
+# The problem we're going to solve today is to train a model to classify
+# **ants** and **bees**. We have about 120 training images each for ants and bees.
+# There are 75 validation images for each class. Usually, this is a very
+# small dataset to generalize upon, if trained from scratch. Since we
+# are using transfer learning, we should be able to generalize reasonably
+# well.
+
+data_dir = '~./hymenoptera_data'
+# Your file path
+# Here we use hymenoptera_data
+# You can download at <https://download.pytorch.org/tutorial/hymenoptera_data.zip>
+
+
+# Here we use torchvision.transforms.Compose to transform and normalize data
+# ------
 # CenterCrop(size): 将给定的PIL.Image进行中心切割，输出size，这里size可以是tuple(H,W)
 # RandomCrop（size, padding = 0)
 # RandomHorizontalFlip() 以p=0.5的概率随机水平反转
@@ -55,17 +84,6 @@ transforms.Normalize([0.485,0.456,0.406],[0.229,0.224,0.225])
 ]),
 }
 
-# Make sure that your file is like:
-# file_folder:
-#   train_folder:
-#     train_class_i_folder
-#     ...
-#   test:
-#     test_class_i_folder
-#     ...
-
-data_dir = '/Users/wuxinheng/Documents/hymenoptera_data'
-# Your file path
 
 
 image_datasets = {x: datasets.ImageFolder(os.path.join(data_dir,x),data_transforms[x])
@@ -80,6 +98,14 @@ dataset_size = {x: len(image_datasets[x]) for x in ['train','val']}
 class_names = image_datasets['train'].classes
 
 device = torch.device("cuda:0" if torch.cuda.is_available else "cpu")
+
+
+######################################################################
+# Visualize a few images
+# ^^^^^^^^^^^^^^^^^^^^^^
+# Let's visualize a few training images so as to understand the data
+# augmentations.
+
 
 def imshow(inp, title=None):
     
